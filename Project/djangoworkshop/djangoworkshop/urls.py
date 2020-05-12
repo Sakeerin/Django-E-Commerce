@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index,name="home"),
     path('category/<slug:category_slug>',views.index,name="product_by_category"),
-    path('product/<slug:category_slug>/<slug:product_slug>',views.productPage,name='productDetail')
+    path('product/<slug:category_slug>/<slug:product_slug>',views.productPage,name='productDetail'),
+    path('cart/add/<int:product_id>',views.addCart,name="addCart")
 ]
 
 if settings.DEBUG :
