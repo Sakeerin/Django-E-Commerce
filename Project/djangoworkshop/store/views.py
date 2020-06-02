@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -48,6 +49,7 @@ def _cart_id(request):
     return cart
 
 
+@login_required(login_url='signIn')
 def addCart(request, product_id):
     product = Product.objects.get(id=product_id)
     try:
