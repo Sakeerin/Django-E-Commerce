@@ -16,7 +16,7 @@
           </h4>
           <h5>ราคา ฿{{product.price|intcomma}}</h5>
           <p class="card-text">
-            {{product.description}}
+            {{product.description | slice:":70"}}
           </p>
         </div>
         <div class="card-footer">
