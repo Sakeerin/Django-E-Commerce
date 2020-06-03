@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'store',
     'django.contrib.humanize',
-    'crispy_forms'
+    'crispy_forms',
+    'stripe'
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+PUBLIC_KEY = 'pk_test_YTga5AnITwcCpxZaFiGfhDE600hlLhk3zl'
+SECRET_KEY = 'sk_test_9fJhiw0dowVAvHFRXXVfV21E00RutFjY56'
