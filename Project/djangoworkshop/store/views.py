@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from store.models import Category, Product, Cart, CartItem
+from store.models import Category, Product, Cart, CartItem, Order, OrderItem
 from store.forms import SignUpForm
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.forms import AuthenticationForm
@@ -98,6 +98,12 @@ def cartdetail(request):
         try:
             token = request.POST['stripeToken']
             email = request.POST['stripeEmail']
+            name = request.POST['stripeBillingName']
+            address = request.POST['stripeBillingAddressLine1']
+            city = request.POST['stripeBillingAddressCity']
+            postcode = request.POST['stripeShippingAddressZip']
+
+            print(request.POST)
             customer = stripe.Customer.create(
                 email=email,
                 source=token
@@ -108,6 +114,34 @@ def cartdetail(request):
                 description=description,
                 customer=customer.id
             )
+            # save order
+            order = Order.objects.create(
+                name=name,
+                address=address,
+                city=city,
+                postcode=postcode,
+                total=total,
+                email=email,
+                token=token
+            )
+            order.save()
+
+            # save orderItem
+            for item in cart_items:
+                order_item = OrderItem.objects.create(
+                    product=item.product.name,
+                    quantity=item.quantity,
+                    price=item.product.price,
+                    order=order
+                )
+                order_item.save()
+                # ลดจำนวน stock
+                product = Product.objects.get(id=item.product.id)
+                product.stock = int(
+                    item.product.stock - order_item.quantity)
+                product.save()
+                item.delete()
+            return redirect('home')
         except stripe.error.CardError as e:
             return False, e
 
