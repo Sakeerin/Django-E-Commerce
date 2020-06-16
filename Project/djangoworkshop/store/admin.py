@@ -11,7 +11,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'total', 'token', 'created', 'updated']
+    list_display = ['id', 'name', 'email',
+                    'total', 'token', 'created', 'updated']
     list_per_page = 5
 
 

@@ -73,13 +73,13 @@ def addCart(request, product_id):
         )
         cart_item.save()
 
-    return redirect('/')
+    return redirect('cartdetail')
 
 
 def cartdetail(request):
     total = 0
     counter = 0
-    cart_item = None
+    cart_items = None
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, active=True)
@@ -141,7 +141,8 @@ def cartdetail(request):
                     item.product.stock - order_item.quantity)
                 product.save()
                 item.delete()
-            return redirect('home')
+            return redirect('thankyou')
+
         except stripe.error.CardError as e:
             return False, e
 
@@ -201,3 +202,22 @@ def search(request):
     name = request.GET['title']
     products = Product.objects.filter(name__contains=name)
     return render(request, 'index.html', {'products': products})
+
+
+def orderHistory(request):
+    if request.user.is_authenticated:
+        email = str(request.user.email)
+        orders = Order.objects.filter(email=email)
+    return render(request, 'orders.html', {'orders': orders})
+
+
+def viewOrder(request, order_id):
+    if request.user.is_authenticated:
+        email = str(request.user.email)
+        order = Order.objects.get(email=email, id=order_id)
+        orderitem = OrderItem.objects.filter(order=order)
+    return render(request, 'viewOrder.html', {'order': order, 'order_items': orderitem})
+
+
+def thankyou(request):
+    return render(request, 'thankyou.html')
